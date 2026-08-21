@@ -1,0 +1,10 @@
+{
+  "GEMINI_API_KEY": "",
+  "model": "gemini-3.5-flash",
+  "file_search_store_names": [
+    "fileSearchStores/replace-with-your-store-id"
+  ],
+  "top_k": 8,
+  "temperature": 0.2,
+  "request_timeout_seconds": 45
+}

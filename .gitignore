@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+docs/
+tests/
+*.egg-info/
+
+# Local credentials and maintainer notes
+/config/settings.json
+/config/settings.local.json
+/.plugin-data/
