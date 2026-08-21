@@ -4,8 +4,12 @@ A read-only stdio MCP server that lets ChatGPT and Codex search knowledge stored
 
 > The source code in this repository is public, while the running MCP server and Gemini credentials remain in your environment. Secure MCP Tunnel is intended for private, developer-mode connections; it is not a mechanism for submitting or distributing a public OpenAI plugin.
 
+![](images/chatgpt.png)
+
+
 ## Features
 
+- **Easy Integration Method Between Private RAG (Gemini File Store) and ChatGPT**
 - Search multiple Gemini File Search Stores in a single request
 - Withhold Gemini answer text when no File Search citation is present
 - List document names, indexing states, and update times for each Store
@@ -17,13 +21,7 @@ Documents in Stores selected by the user are treated as trusted knowledge source
 
 ## Connection Architecture
 
-```text
-ChatGPT or Codex
-  → OpenAI-hosted Tunnel endpoint
-  → tunnel-client
-  → scripts/mcp_server.py (stdio JSON-RPC)
-  → Gemini File Search API
-```
+![](images/gemini_filesearch_mcp_server.png)
 
 You do not need to open an inbound port to this MCP server. `tunnel-client` establishes an outbound HTTPS connection to OpenAI and forwards received MCP requests to the local stdio server.
 
@@ -41,7 +39,7 @@ The Gemini API key and the `tunnel-client` runtime API key are different credent
 
 Creating or editing a Tunnel requires Tunnels Read + Manage permissions in OpenAI Platform. Running `tunnel-client` and selecting the Tunnel in ChatGPT require Tunnels Read + Use permissions. To use the same server from Codex, associate the Platform organization used by Codex with the same Tunnel.
 
-## 1. Configure Gemini
+## 1. Configuration
 
 The shell examples below are for macOS and Linux. From the repository root, copy the example file to the local settings path.
 
