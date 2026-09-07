@@ -1,0 +1,28 @@
+services:
+  tunnel:
+    build: .
+    image: gemini-filesearch-mcp:local
+    init: true
+    restart: unless-stopped
+    # Match the owner of chmod-600 settings files on Linux.
+    user: "${DOCKER_UID:-1000}:${DOCKER_GID:-1000}"
+    environment:
+      CONTROL_PLANE_TUNNEL_ID: "${CONTROL_PLANE_TUNNEL_ID:?Set CONTROL_PLANE_TUNNEL_ID in .env}"
+      CONTROL_PLANE_API_KEY: "${CONTROL_PLANE_API_KEY:?Set CONTROL_PLANE_API_KEY in .env}"
+      # Pass through when set; leave absent for legacy JSON-key configurations.
+      GEMINI_API_KEY:
+    volumes:
+      - type: bind
+        source: "${GEMINI_FILESEARCH_SETTINGS_FILE:-./config/settings.json}"
+        target: /run/secrets/gemini_settings
+        read_only: true
+        bind:
+          create_host_path: false
+    read_only: true
+    tmpfs:
+      - /tmp:mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 30s

@@ -14,3 +14,6 @@ tests/
 /config/settings.json
 /config/settings.local.json
 /.plugin-data/
+/.env
+/.env.*
+!/.env.example

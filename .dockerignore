@@ -1,0 +1,9 @@
+# Only application code and the Dockerfile belong in the build context.
+**
+!Dockerfile
+!src/
+!src/gemini_filesearch/
+!src/gemini_filesearch/*.py
+!scripts/
+!scripts/mcp_server.py
+!scripts/docker_entrypoint.py

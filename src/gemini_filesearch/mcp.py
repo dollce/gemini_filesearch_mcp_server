@@ -10,6 +10,7 @@ from .config import (
     DEFAULT_REQUEST_TIMEOUT_SECONDS,
     SUPPORTED_FILE_SEARCH_MODELS,
     load_settings_file,
+    resolve_api_key,
 )
 from .presentation import build_safe_search_output
 from .redaction import redact_text, redact_value
@@ -228,7 +229,8 @@ class McpApplication:
         raw = json.loads(self._settings_path.read_text(encoding="utf-8"))
         if not isinstance(raw, Mapping):
             raise ValueError("settings file must contain a JSON object")
-        api_key = raw.get("GEMINI_API_KEY", "")
+        api_key = resolve_api_key(raw)
+        legacy_api_key = raw.get("GEMINI_API_KEY", "")
         raw_store_names = raw.get("file_search_store_names", [])
         store_names = (
             [
@@ -261,7 +263,12 @@ class McpApplication:
         }
         structured = redact_value(
             structured,
-            secret_values=(api_key,),
+            secret_values=(
+                api_key,
+                api_key.strip() if isinstance(api_key, str) else "",
+                legacy_api_key,
+                legacy_api_key.strip() if isinstance(legacy_api_key, str) else "",
+            ),
         )
         return {
             "content": [
