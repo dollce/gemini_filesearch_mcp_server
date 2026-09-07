@@ -21,7 +21,6 @@ DEFAULT_REQUEST_TIMEOUT_SECONDS = 45.0
 MIN_REQUEST_TIMEOUT_SECONDS = 5.0
 MAX_REQUEST_TIMEOUT_SECONDS = 75.0
 REQUIRED_SETTINGS_KEYS = (
-    "GEMINI_API_KEY",
     "model",
     "file_search_store_names",
     "top_k",
@@ -43,7 +42,22 @@ class Settings:
     request_timeout_seconds: float = DEFAULT_REQUEST_TIMEOUT_SECONDS
 
 
-def load_settings_dict(raw: Mapping[str, Any]) -> Settings:
+def resolve_api_key(
+    raw: Mapping[str, Any],
+    environ: Mapping[str, str] | None = None,
+) -> Any:
+    """Select the key without validating it, including for the status tool."""
+    values = os.environ if environ is None else environ
+    if "GEMINI_API_KEY" in values:
+        # An explicitly empty environment value must not revive an old JSON key.
+        return values["GEMINI_API_KEY"]
+    return raw.get("GEMINI_API_KEY", "")
+
+
+def load_settings_dict(
+    raw: Mapping[str, Any],
+    environ: Mapping[str, str] | None = None,
+) -> Settings:
     if not isinstance(raw, Mapping):
         raise SettingsValidationError(
             "settings file must contain a JSON object"
@@ -58,13 +72,14 @@ def load_settings_dict(raw: Mapping[str, Any]) -> Settings:
             + ", ".join(missing_keys)
         )
 
-    api_key_value = raw["GEMINI_API_KEY"]
+    api_key_value = resolve_api_key(raw, environ)
     if not isinstance(api_key_value, str):
         raise SettingsValidationError("GEMINI_API_KEY must be a string")
     api_key = api_key_value.strip()
     if not api_key:
         raise SettingsValidationError(
-            "GEMINI_API_KEY is empty in the selected settings file."
+            "GEMINI_API_KEY is empty or missing. Set it in the environment "
+            "(.env for Docker Compose), or in the settings file for legacy setups."
         )
     if len(api_key) < 8:
         raise SettingsValidationError(
@@ -147,9 +162,12 @@ def load_settings_dict(raw: Mapping[str, Any]) -> Settings:
     )
 
 
-def load_settings_file(settings_path: Path) -> Settings:
+def load_settings_file(
+    settings_path: Path,
+    environ: Mapping[str, str] | None = None,
+) -> Settings:
     raw = json.loads(settings_path.read_text(encoding="utf-8"))
-    return load_settings_dict(raw)
+    return load_settings_dict(raw, environ)
 
 
 def resolve_settings_path(

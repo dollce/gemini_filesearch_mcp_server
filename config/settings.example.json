@@ -1,5 +1,4 @@
 {
-  "GEMINI_API_KEY": "",
   "model": "gemini-3.5-flash",
   "file_search_store_names": [
     "fileSearchStores/replace-with-your-store-id"
