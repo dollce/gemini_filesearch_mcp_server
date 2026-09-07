@@ -33,7 +33,7 @@ A read-only stdio MCP server that lets ChatGPT and Codex search knowledge stored
 
 From the repository root, copy [`.env.example`](.env.example) to `.env` and [`config/settings.example.json`](config/settings.example.json) to `config/settings.json` if those local files do not already exist. Edit the copies as your current user.
 
-In `.env`, fill in these three values:
+In `.env`, fill in these three values. Uncomment the `GEMINI_API_KEY` entry before setting its value:
 
 | Variable | Value to enter |
 |---|---|

@@ -26,7 +26,7 @@ chmod 600 config/settings.json .env
 
 ### Credentials and Tunnel ID
 
-Edit `.env` locally. Docker Compose reads it at startup; the native instructions below load it into the shell environment.
+Edit `.env` locally. Uncomment `GEMINI_API_KEY` when setting a Gemini key in this file. Docker Compose reads it at startup; the native instructions below load it into the shell environment.
 
 | Variable | Value |
 |---|---|
@@ -147,7 +147,7 @@ for name in a b; do
 done
 ```
 
-In each file, set its `CONTROL_PLANE_TUNNEL_ID`, an OpenAI runtime key authorized for that Tunnel, and the appropriate `GEMINI_API_KEY`.
+In each file, set its `CONTROL_PLANE_TUNNEL_ID` and an OpenAI runtime key authorized for that Tunnel, then uncomment and set the appropriate `GEMINI_API_KEY`.
 
 | Environment file | Compose project | Tunnel ID | Container |
 |---|---|---|---|
